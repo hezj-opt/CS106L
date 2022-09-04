@@ -1,0 +1,51 @@
+Assignment 3: STL HashMap (short answer questions)
+Names: Zijun He
+
+Milestone 1: Const-Correctness
+1.at() vs []
+Q:
+Explain the difference between at() and the implementation of the operator []. Wy did you have to overload one and not the other?
+A:
+At use find_node function to find the value paired with key, but operator [] use insert function: if the key is exist, it is same
+as the at(), but if the key is not exist, it will create a new pair!
+Operator [] may modify the map, and at() function never modify map, so I overload at() function.
+
+2.Find vs. 𝓕𝓲𝓷𝓭
+Q:
+In addition to the HashMap::find member function, there is also a std::find function in the STL algorithms library. 
+If you were searching for key k in HashMap m, is it preferable to call m.find(k) or std::find(m.begin(), m.end(), k)?
+A:
+It is preferable to use m.find(k) for it calculate k's hash value first so it just traverse one bucket! It will be faster than
+std::find(m.begin(), m.end(), k).
+
+3.RAII?
+Q:
+This HashMap class is RAII-compliant. Explain why. 
+A:
+The vector _buckets_array only accuired space when the hashmap is initialized, and only lost it's space when out of scope.
+
+4.Increments
+Q:
+Briefly explain the implementation of HashMapIterator's operator++, which we provide for you. 
+How does it work and what checks does it have?
+A:(?)
+The prefix ++: return the next node in current bucket, if it is nullptr, it will traverse other buckets until it find a node not
+nullptr and then return the iterator.
+The postfix ++: create an copy first, and then call postfix ++ to modify the iterator, but return the copy finally.
+
+Milestone 2: Special Member Functions and Move Semantics
+1.Attachment Issues
+Q:
+Why is it that we need to implement the special member functions in the HashMap class, 
+but we can default all the special member functions in the HashMapIterator class?
+A:
+NO! If we use default copy constructor, two different bucket will contains same nodes! And if we use the default copy assignment,
+it will cause memory leak.
+
+2.Move Semantics
+Q:
+In your move constructor or move assignment operator, why did you have to std::move each member, 
+even though the parameter (named rhs) is already an r-value reference? 
+A: 
+Because the attributes of the rhs may not be r-value, and assign it to the lhs's corresponding attribute may trigger copy 
+instead of move, so we need to use std::move.
